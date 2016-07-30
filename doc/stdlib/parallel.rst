@@ -182,12 +182,12 @@ General Parallel Computing Support
    * ``topology``\ : Specifies how the workers connect to each other. Sending a message           between unconnected workers results in an error.
 
      * ``topology=:all_to_all``  :  All processes are connected to each other.                   This is the default.
-     * ``topology=:master_slave``  :  Only the driver process, i.e. pid 1 connects to the                     workers. The workers do not connect to each other.
+     * ``topology=:master_slave``  :  Only the driver process, i.e. ``pid`` 1 connects to the                     workers. The workers do not connect to each other.
      * ``topology=:custom``  :  The ``launch`` method of the cluster manager specifes the               connection topology via fields ``ident`` and ``connect_idents`` in               ``WorkerConfig``\ . A worker with a cluster manager identity ``ident``               will connect to all workers specified in ``connect_idents``\ .
 
    Environment variables :
 
-   If the master process fails to establish a connection with a newly launched worker within 60.0 seconds, the worker treats it as a fatal situation and terminates. This timeout can be controlled via environment variable ``JULIA_WORKER_TIMEOUT``\ . The value of JULIA_WORKER_TIMEOUT` on the master process specifies the number of seconds a newly launched worker waits for connection establishment.
+   If the master process fails to establish a connection with a newly launched worker within 60.0 seconds, the worker treats it as a fatal situation and terminates. This timeout can be controlled via environment variable ``JULIA_WORKER_TIMEOUT``\ . The value of ``JULIA_WORKER_TIMEOUT`` on the master process specifies the number of seconds a newly launched worker waits for connection establishment.
 
 .. function:: addprocs(manager::ClusterManager; kwargs...) -> List of process identifiers
 
@@ -298,8 +298,6 @@ General Parallel Computing Support
    .. Docstring generated from Julia source
 
    Called by cluster managers using custom transports. It should be called when the custom transport implementation receives the first message from a remote worker. The custom transport must manage a logical connection to the remote worker and provide two ``IO`` objects, one for incoming messages and the other for messages addressed to the remote worker. If ``incoming`` is ``true``\ , the remote peer initiated the connection. Whichever of the pair initiates the connection sends the cluster cookie and its Julia version number to perform the authentication handshake.
-
-.. function:: Future()
 
 .. function:: RemoteException(captured)
 
@@ -581,11 +579,21 @@ General Parallel Computing Support
 
    Removes all cached functions from all participating workers.
 
-.. function:: Base.remoteref_id(r::AbstractRemoteRef) -> (whence, id)
+.. function:: Base.remoteref_id(r::AbstractRemoteRef) -> RRID
 
    .. Docstring generated from Julia source
 
-   A low-level API which returns the unique identifying tuple for a remote reference. A reference id is a tuple of two elements - ``pid`` where the reference was created from and a one-up number from that node.
+   ``Future``\ s and ``RemoteChannel``\ s are identified by fields:
+
+   ``where`` - refers to the node where the underlying object/storage referred to by the reference actually exists.
+
+   ``whence`` - refers to the node the remote reference was created from.  Note that this is different from the node where the underlying object  referred to actually exists. For example calling ``RemoteChannel(2)``  from the master process would result in a ``where`` value of 2 and  a ``whence`` value of 1.
+
+   ``id`` is unique across all references created from the worker specified by ``whence``\ .
+
+   Taken together,  ``whence`` and ``id`` uniquely identify a reference across all workers.
+
+   ``Base.remoteref_id`` is a low-level API which returns a ``Base.RRID``  object that wraps ``whence`` and ``id`` values of a remote reference.
 
 .. function:: Base.channel_from_id(id) -> c
 
