@@ -317,7 +317,7 @@ endef
 
 install: $(build_depsbindir)/stringreplace $(BUILDROOT)/doc/_build/html
 	@$(MAKE) $(QUIET_MAKE) all
-	@for subdir in $(bindir) $(libexecdir) $(datarootdir)/julia/site/$(VERSDIR) $(docdir) $(man1dir) $(includedir)/julia $(libdir) $(private_libdir) $(sysconfdir); do \
+	@for subdir in $(bindir) $(libexecdir) $(datarootdir)/julia/$(VERSDIR)/site $(docdir) $(man1dir) $(includedir)/julia $(libdir) $(private_libdir) $(sysconfdir); do \
 		mkdir -p $(DESTDIR)$$subdir; \
 	done
 

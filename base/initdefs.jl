@@ -40,9 +40,9 @@ function init_load_path()
     if haskey(ENV, "JULIA_LOAD_PATH")
         prepend!(LOAD_PATH, split(ENV["JULIA_LOAD_PATH"], @static is_windows() ? ';' : ':'))
     end
-    push!(LOAD_PATH, abspath(JULIA_HOME, "..", "local", "share", "julia", "site", vers))
-    push!(LOAD_PATH, abspath(JULIA_HOME, "..", "share", "julia", "site", vers))
-    #push!(LOAD_CACHE_PATH, abspath(JULIA_HOME, "..", "lib", "julia")) #TODO: add a builtin location?
+    push!(LOAD_PATH, abspath(JULIA_HOME, "..", "local", "share", "julia", vers, "site"))
+    push!(LOAD_PATH, abspath(JULIA_HOME, "..", "share", "julia", vers, "site"))
+    #push!(LOAD_CACHE_PATH, abspath(JULIA_HOME, "..", "lib", "julia", vers)) #TODO: add a builtin location?
 end
 
 # initialize the local proc network address / port
