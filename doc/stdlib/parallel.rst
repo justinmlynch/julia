@@ -217,6 +217,12 @@ General Parallel Computing Support
 
    Returns a list of all process identifiers.
 
+.. function:: procs(pid::Integer)
+
+   .. Docstring generated from Julia source
+
+   Returns a list of all process identifiers visible to worker ``pid``\ . The result depends on the topology of the workgroup.
+
 .. function:: workers()
 
    .. Docstring generated from Julia source
