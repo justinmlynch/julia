@@ -1660,8 +1660,8 @@ function show_vector(io::IO, v, opn, cls)
         io = IOContext(io, :compact => compact)
     end
     print(io, prefix)
-    if limited && length(v) > 20
-        inds = _indices1(v)
+    if limited && _length(v) > 20
+        inds = indices1(v)
         show_delim_array(io, v, opn, ",", "", false, inds[1], inds[1]+9)
         print(io, "  \u2026  ")
         show_delim_array(io, v, "", ",", cls, false, inds[end-9], inds[end])
@@ -1669,8 +1669,6 @@ function show_vector(io::IO, v, opn, cls)
         show_delim_array(io, v, opn, ",", cls, false)
     end
 end
-_indices1(v::AbstractArray) = indices(v,1)
-_indices1(iter) = 1:length(iter)
 
 # printing BitArrays
 

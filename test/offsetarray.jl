@@ -209,6 +209,11 @@ cmp_showf(Base.print_matrix, io, OffsetArray(rand(5,5), (10,-9)))       # rows&c
 cmp_showf(Base.print_matrix, io, OffsetArray(rand(10^3,5), (10,-9)))    # columns fit
 cmp_showf(Base.print_matrix, io, OffsetArray(rand(5,10^3), (10,-9)))    # rows fit
 cmp_showf(Base.print_matrix, io, OffsetArray(rand(10^3,10^3), (10,-9))) # neither fits
+for n = 0:4
+    a = OffsetArray(rand(ntuple(d->3,n)), ntuple(identity,n))
+    show(IOContext(io, limit=true), MIME("text/plain"), a)
+    show(IOContext(io, limit=true), MIME("text/plain"), (a,a))
+end
 
 # Similar
 B = similar(A, Float32)
