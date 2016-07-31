@@ -1476,13 +1476,16 @@ e.g. `10-element Array{Int64,1}`.
 summary(x) = string(typeof(x)) # e.g. Int64
 
 # sizes such as 0-dimensional, 4-dimensional, 2x3
-dims2string(d) = isempty(d) ? "0-dimensional" :
-                 length(d) == 1 ? "$(d[1])-element" :
-                 join(map(string,d), '×')
+dims2string(d::Dims) = isempty(d) ? "0-dimensional" :
+                       length(d) == 1 ? "$(d[1])-element" :
+                       join(map(string,d), '×')
+
+inds2string(inds::Indices) = join(map(string,inds), '×')
 
 # anything array-like gets summarized e.g. 10-element Array{Int64,1}
-summary(a::AbstractArray) =
-    string(dims2string(size(a)), " ", typeof(a))
+summary(a::AbstractArray) = _summary(a, to_shape(indices(a)))
+_summary(a, dims::Dims) = string(dims2string(dims), " ", typeof(a))
+_summary(a, inds) = string(typeof(a), " with indices ", inds2string(inds))
 
 # n-dimensional arrays
 function show_nd(io::IO, a::AbstractArray, print_matrix, label_slices)

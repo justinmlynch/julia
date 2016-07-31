@@ -34,7 +34,6 @@ Base.size(A::OffsetArray) = errmsg(A)
 Base.size(A::OffsetArray, d) = errmsg(A)
 Base.eachindex(::LinearSlow, A::OffsetArray) = CartesianRange(indices(A))
 Base.eachindex(::LinearFast, A::OffsetVector) = indices(A, 1)
-Base.summary(A::OffsetArray) = string(typeof(A))*" with indices "*string(indices(A))
 
 # Implementations of indices and indices1. Since bounds-checking is
 # performance-critical and relies on indices, these are usually worth
@@ -195,6 +194,9 @@ show(io, v)
 str = takebuf_string(io)
 show(io, parent(v))
 @test str == takebuf_string(io)
+smry = summary(v)
+@test contains(smry, "OffsetArray{Float64,1")
+@test contains(smry, "with indices -1:1")
 function cmp_showf(printfunc, io, A)
     ioc = IOContext(io, limit=true, compact=true)
     printfunc(ioc, A)
