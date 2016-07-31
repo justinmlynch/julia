@@ -67,6 +67,9 @@
 // OBJPROFILE counts objects by type
 // #define OBJPROFILE
 
+// Automatic Instrumenting Profiler
+//#define ENABLE_TIMINGS
+
 
 // method dispatch profiling --------------------------------------------------
 
@@ -111,19 +114,19 @@
 
 // sanitizer defaults ---------------------------------------------------------
 
+// XXX: julia_internal.h already defines convenience macros
+
 // Automatically enable MEMDEBUG and KEEP_BODIES for the sanitizers
-#if defined(__has_feature)
-#  if __has_feature(address_sanitizer) || __has_feature(memory_sanitizer)
-#  define MEMDEBUG
-#  define KEEP_BODIES
-#  endif
-// Memory sanitizer needs TLS, which llvm only supports for the small memory model
-#  if __has_feature(memory_sanitizer)
-   // todo: fix the llvm MemoryManager to work with small memory model
-#  endif
+#if defined(__SANITIZE_ADDRESS__) || \
+    (defined(__has_feature) && __has_feature(address_sanitizer)) || \
+    (defined(__has_feature) && __has_feature(memory_sanitizer))
+#define MEMDEBUG
+#define KEEP_BODIES
 #endif
 
-// Automatic Instrumenting Profiler
-//#define ENABLE_TIMINGS
+// Memory sanitizer needs TLS, which llvm only supports for the small memory model
+#if defined(__has_feature) && __has_feature(memory_sanitizer)
+// todo: fix the llvm MemoryManager to work with small memory model
+#endif
 
 #endif
